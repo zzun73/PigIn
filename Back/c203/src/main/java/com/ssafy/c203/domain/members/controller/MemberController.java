@@ -4,6 +4,7 @@ import com.ssafy.c203.domain.members.dto.RequestDto.SignUpDto;
 import com.ssafy.c203.domain.members.entity.Members;
 import com.ssafy.c203.domain.members.entity.WithDrawalStatus;
 import com.ssafy.c203.domain.members.service.MemberService;
+import java.security.NoSuchAlgorithmException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("sign-up")
-    public ResponseEntity<?> signUp(@ModelAttribute SignUpDto signUpDto) {
+    public ResponseEntity<?> signUp(@ModelAttribute SignUpDto signUpDto)
+        throws NoSuchAlgorithmException {
         memberService.singUp(Members
             .builder()
             .name(signUpDto.getName())
