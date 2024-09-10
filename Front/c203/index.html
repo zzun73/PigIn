@@ -16,7 +16,7 @@
       sizes="152x152"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="/manifest.json" />
     <title>vite-project</title>
   </head>
   <body>
@@ -32,7 +32,7 @@
             console.log("Service worker 등록 성공:", registration);
           })
           .catch((err) => {
-            console.log("Service worker 등록 실패:", error);
+            console.log("Service worker 등록 실패:", err);
           });
       } else {
         console.log("Service worker 지원 불가");
