@@ -1,39 +1,19 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React from "react";
+import useStore from "./store/useStore";
 import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0);
+const App: React.FC = () => {
+  const bears = useStore((state) => state.bears);
+  const increase = useStore((state) => state.increase);
+  const decrease = useStore((state) => state.decrease);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <div className="bg-blue-500 text-white p-4 rounded-lg">
-        <h1 className="text-2xl font-bold">
-          Hello, Tailwind CSS with React and TypeScript!
-        </h1>
-      </div>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <h1>이정준 꿀밤 맞을 횟수 : {bears}</h1>
+      <button onClick={increase}>Increase</button>
+      <button onClick={decrease}>Decrease</button>
+    </div>
   );
-}
+};
 
 export default App;
