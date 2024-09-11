@@ -43,6 +43,9 @@ public class Members {
     @Column(nullable = false)
     private String salt;
 
+    @Column(nullable = false)
+    private String refreshToken;
+
     @Builder
     public Members(String email, String password, String name, String phoneNumber,
         WithDrawalStatus status, String userKey, String birth, String salt) {

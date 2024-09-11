@@ -2,13 +2,17 @@ package com.ssafy.c203.domain.members.service;
 
 import com.ssafy.c203.domain.account.entity.SavingsAccount;
 import com.ssafy.c203.domain.account.repository.SavingsAccountRepository;
+import com.ssafy.c203.domain.members.dto.RequestDto.MMSDto;
 import com.ssafy.c203.domain.members.dto.ResponseDto.AccountNoDto;
 import com.ssafy.c203.domain.members.dto.ResponseDto.UserKeyDto;
+import com.ssafy.c203.domain.members.entity.MMSAuthentication;
 import com.ssafy.c203.domain.members.entity.Members;
+import com.ssafy.c203.domain.members.repository.MMSAuthenticationRepository;
 import com.ssafy.c203.domain.members.repository.MembersRepository;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +34,9 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncrypt passwordEncrypt;
     private final RestTemplate restTemplate;
     private final SavingsAccountRepository savingsAccountRepository;
+    private final MMSAuthenticationRepository authenticationRepository;
 
+    private static final String MMS_MESSAGE_HEADER = "본인인증을 위해 다음 인정 번호를 입력 바랍니다.\n";
     @Value("123.123.123.123")
     private String MY_SSAFYDATA_BASE_URL;
 
@@ -88,5 +94,29 @@ public class MemberServiceImpl implements MemberService {
             .accountNo(accountNo)
             .member(member)
             .build());
+    }
+
+    @Override
+    public boolean MMSGenerate(MMSDto mmsDto) throws Exception {
+        MMSService mmsService = new MMSService(restTemplate);
+
+        //6자리 인증번호 만들기
+        Random generator = new Random();
+        generator.setSeed(System.currentTimeMillis());
+        String authenticationNumber = String.valueOf(generator.nextInt(1000000) % 1000000);
+
+        //메시지 보내기
+        String message = MMS_MESSAGE_HEADER + "[" + authenticationNumber + ']';
+        boolean isSend = mmsService.sendMMS(message, mmsDto.getPhoneNumber());
+
+        if (isSend) {
+            authenticationRepository.save(MMSAuthentication
+                .builder()
+                .num(authenticationNumber)
+                .phoneNumber(mmsDto.getPhoneNumber())
+                .build());
+            return true;
+        }
+        return false;
     }
 }
